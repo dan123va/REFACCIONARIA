@@ -1,0 +1,308 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Historial de Ventas
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= HEADER ================= -->
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h2 class="mb-0">
+        📋 Historial de Ventas
+    </h2>
+
+</div>
+
+<!-- ================= BUSCADOR ================= -->
+
+<div class="card card-optimus mb-3">
+
+    <div class="card-body">
+
+        <div class="input-group">
+
+            <span class="input-group-text">
+                🔍
+            </span>
+
+            <input
+                type="text"
+                id="buscarVenta"
+                class="form-control"
+                placeholder="Buscar por folio, usuario o fecha...">
+
+            <button
+                class="btn btn-outline-secondary"
+                id="limpiarBusqueda"
+                type="button">
+
+                ✖
+
+            </button>
+
+        </div>
+
+        <small
+            id="contadorVentas"
+            class="text-muted mt-2 d-block">
+
+            Mostrando {{ ventas|length }} venta(s)
+
+        </small>
+
+    </div>
+
+</div>
+
+<!-- ================= TABLA ================= -->
+
+<div class="card card-optimus">
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <div
+                id="sinResultados"
+                class="alert alert-warning"
+                style="display:none;">
+
+                No se encontraron ventas.
+
+            </div>
+
+            <table
+                class="table table-hover align-middle"
+                id="tablaVentas">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>Folio</th>
+                        <th>Usuario</th>
+                        <th>Fecha</th>
+                        <th>Total</th>
+                        <th>Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for venta in ventas %}
+
+                    <tr>
+
+                        <td>#{{ venta[0] }}</td>
+
+                        <td>{{ venta[1] }}</td>
+
+                        <td>{{ venta[2] }}</td>
+
+                        <td>
+
+                            <span class="fw-bold text-success">
+
+                                ${{ venta[3] }}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <a
+                                href="/detalle_venta/{{ venta[0] }}"
+                                class="btn btn-primary btn-sm">
+
+                                👁 Ver
+
+                            </a>
+
+                            <td>
+
+
+
+</td>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+<!-- ================================================= -->
+<!-- MODALES DETALLE DE VENTA -->
+<!-- ================================================= -->
+
+{% for venta in ventas %}
+
+<div class="modal fade"
+     id="modalDetalle{{ venta[0] }}"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-xl">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-primary text-white">
+
+                <h5 class="modal-title">
+
+                    🧾 Detalle de Venta #{{ venta[0] }}
+
+                </h5>
+
+                <button
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover table-striped align-middle">
+
+                        <thead class="table-dark">
+
+                            <tr>
+
+                                <th>Código</th>
+                                <th>Producto</th>
+                                <th>Cantidad</th>
+                                <th>Precio</th>
+                                <th>Subtotal</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for item in venta.detalles %}
+
+                            <tr>
+
+                                <td>{{ item[0] }}</td>
+
+                                <td>{{ item[1] }}</td>
+
+                                <td>{{ item[2] }}</td>
+
+                                <td>${{ item[3] }}</td>
+
+                                <td class="fw-bold">
+
+                                    ${{ item[4] }}
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Cerrar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+{% block extra_js %}
+
+<script>
+
+const buscador=document.getElementById("buscarVenta");
+
+const limpiar=document.getElementById("limpiarBusqueda");
+
+const filas=document.querySelectorAll("#tablaVentas tbody tr");
+
+const contador=document.getElementById("contadorVentas");
+
+const sinResultados=document.getElementById("sinResultados");
+
+buscador.addEventListener("keyup",filtrarVentas);
+
+limpiar.addEventListener("click",()=>{
+
+    buscador.value="";
+
+    filtrarVentas();
+
+});
+
+function filtrarVentas(){
+
+    const texto=buscador.value.toLowerCase();
+
+    let visibles=0;
+
+    filas.forEach(fila=>{
+
+        if(fila.textContent.toLowerCase().includes(texto)){
+
+            fila.style.display="";
+
+            visibles++;
+
+        }
+
+        else{
+
+            fila.style.display="none";
+
+        }
+
+    });
+
+    contador.innerHTML="Mostrando "+visibles+" venta(s)";
+
+    sinResultados.style.display=visibles===0?"block":"none";
+
+}
+
+</script>
+
+{% endblock %}

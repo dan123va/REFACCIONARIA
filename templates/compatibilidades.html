@@ -1,0 +1,532 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Compatibilidades
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= HEADER ================= -->
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h2 class="mb-0">
+        🚗 Compatibilidades
+    </h2>
+
+    <button
+        class="btn btn-danger"
+        data-bs-toggle="modal"
+        data-bs-target="#modalCompatibilidad">
+
+        + Nueva Compatibilidad
+
+    </button>
+
+</div>
+
+<!-- ================= BUSCADOR TABLA ================= -->
+
+<div class="card card-optimus mb-3">
+
+    <div class="card-body">
+
+        <div class="input-group">
+
+            <span class="input-group-text">
+
+                <i class="bi bi-search"></i>
+
+            </span>
+
+
+            <input
+                id="buscarCompatibilidad"
+                class="form-control"
+                placeholder="Buscar producto, modelo o año...">
+
+
+            <button
+                id="limpiarCompatibilidad"
+                class="btn btn-outline-secondary"
+                type="button">
+
+                <i class="bi bi-x-lg"></i>
+
+            </button>
+
+
+        </div>
+
+
+        <small
+            id="contadorCompatibilidad"
+            class="text-muted mt-2 d-block">
+
+            Mostrando {{ compatibilidades|length }} registro(s)
+
+        </small>
+
+
+    </div>
+
+</div>
+
+
+<!-- ================= TABLA ================= -->
+
+<div class="card card-optimus">
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead class="table-dark">
+
+                    <tr>
+
+                        <th>ID</th>
+                        <th>Producto</th>
+                        <th>Modelo</th>
+                        <th>Año Inicio</th>
+                        <th>Año Fin</th>
+                        <th>Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                {% for c in compatibilidades %}
+
+                    <tr>
+
+                        <td>{{ c[0] }}</td>
+                        <td>{{ c[1] }}</td>
+                        <td>{{ c[2] }}</td>
+                        <td>{{ c[3] }}</td>
+                        <td>{{ c[4] }}</td>
+
+                        <td>
+
+                            <button
+                                class="btn btn-warning btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEditar{{ c[0] }}">
+
+                                ✏
+
+                            </button>
+
+                            <button
+                                class="btn btn-danger btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEliminar{{ c[0] }}">
+
+                                🗑
+
+                            </button>
+
+                        </td>
+
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= MODAL NUEVA ================= -->
+
+<div class="modal fade" id="modalCompatibilidad" tabindex="-1">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-danger text-white">
+
+                <h5 class="modal-title">
+
+                    Registrar Compatibilidad
+
+                </h5>
+
+                <button class="btn-close btn-close-white"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <form method="POST">
+
+                <div class="modal-body">
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Producto</label>
+
+                            <select
+                                name="id_producto"
+                                class="form-select"
+                                required>
+
+                                {% for producto in productos %}
+
+                                    <option value="{{ producto[0] }}">
+
+                                        {{ producto[1] }} - {{ producto[2] }}
+
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Modelo</label>
+
+                            <select
+                                name="id_modelo"
+                                class="form-select"
+                                required>
+
+                                {% for modelo in modelos %}
+
+                                    <option value="{{ modelo[0] }}">
+
+                                        {{ modelo[2] }}
+
+                                    </option>
+
+                                {% endfor %}
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Año Inicio</label>
+
+                            <input
+                                type="number"
+                                name="anio_inicio"
+                                class="form-control"
+                                required>
+
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+
+                            <label>Año Fin</label>
+
+                            <input
+                                type="number"
+                                name="anio_fin"
+                                class="form-control"
+                                required>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+                    <button
+                        class="btn btn-danger"
+                        type="submit">
+
+                        Guardar
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ================= MODALES EDITAR ================= -->
+
+{% for c in compatibilidades %}
+
+<div class="modal fade"
+     id="modalEditar{{ c[0] }}"
+     tabindex="-1">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-warning">
+
+                <h5 class="modal-title">
+
+                    Editar Compatibilidad
+
+                </h5>
+
+                <button class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <form
+                method="POST"
+                action="/editar_compatibilidad/{{ c[0] }}">
+
+                <div class="modal-body">
+
+                    <div class="row">
+
+                        <div class="col-md-6">
+
+                            <label>Año Inicio</label>
+
+                            <input
+                                type="number"
+                                name="anio_inicio"
+                                value="{{ c[3] }}"
+                                class="form-control">
+
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label>Año Fin</label>
+
+                            <input
+                                type="number"
+                                name="anio_fin"
+                                value="{{ c[4] }}"
+                                class="form-control">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal">
+
+                        Cancelar
+
+                    </button>
+
+                    <button
+                        class="btn btn-warning">
+
+                        Actualizar
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+<!-- ================= MODALES ELIMINAR ================= -->
+
+{% for c in compatibilidades %}
+
+<div class="modal fade"
+     id="modalEliminar{{ c[0] }}"
+     tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-danger text-white">
+
+                <h5>
+
+                    Eliminar Compatibilidad
+
+                </h5>
+
+                <button
+                    class="btn-close btn-close-white"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+            <div class="modal-body">
+
+                ¿Deseas eliminar esta compatibilidad?
+
+                <hr>
+
+                <strong>{{ c[1] }}</strong>
+
+                <br>
+
+                {{ c[2] }}
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Cancelar
+
+                </button>
+
+                <a
+                    href="/eliminar_compatibilidad/{{ c[0] }}"
+                    class="btn btn-danger">
+
+                    Sí, eliminar
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+
+<script>
+
+const buscador =
+document.getElementById("buscarCompatibilidad");
+
+
+const limpiar =
+document.getElementById("limpiarCompatibilidad");
+
+
+const contador =
+document.getElementById("contadorCompatibilidad");
+
+
+
+function filtrarCompatibilidades(){
+
+
+let texto =
+buscador.value.toLowerCase();
+
+
+let visibles = 0;
+
+
+
+document
+.querySelectorAll("table tbody tr")
+.forEach(fila=>{
+
+
+let contenido =
+fila.textContent.toLowerCase();
+
+
+
+if(contenido.includes(texto)){
+
+
+fila.style.display="";
+
+
+visibles++;
+
+
+}else{
+
+
+fila.style.display="none";
+
+
+}
+
+
+
+});
+
+
+
+contador.textContent =
+`Mostrando ${visibles} registro(s)`;
+
+
+}
+
+
+
+
+buscador.addEventListener(
+"keyup",
+filtrarCompatibilidades
+);
+
+
+
+limpiar.addEventListener(
+"click",
+()=>{
+
+
+buscador.value="";
+
+
+filtrarCompatibilidades();
+
+
+});
+
+
+</script>
+
+
+{% endblock %}

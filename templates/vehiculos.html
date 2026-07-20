@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Vehículos Registrados
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= HEADER ================= -->
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h2 class="mb-0">
+        🚗 Vehículos registrados
+    </h2>
+
+</div>
+
+<!-- ================= CARD PRINCIPAL ================= -->
+
+<div class="card card-optimus shadow-sm">
+
+    <div class="card-body">
+
+        <!-- ================= TABLA RESPONSIVE ================= -->
+
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <!-- HEADER TABLA -->
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID Modelo</th>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                    </tr>
+                </thead>
+
+                <!-- BODY TABLA -->
+                <tbody>
+
+                    {% for v in vehiculos %}
+
+                    <tr>
+                        <td>{{ v[0] }}</td>
+                        <td>{{ v[1] }}</td>
+                        <td>{{ v[2] }}</td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

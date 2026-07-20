@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Dashboard Administrador
+{% endblock %}
+
+{% block content %}
+
+<div class="text-center py-5">
+
+
+        <h1 class="fw-bold mb-3">
+            Panel Administrador
+        ¡Bienvenido, {{ session['usuario'] }}!
+        </h1>
+
+        <div class="col-md-3">
+            <a href="/historial_ventas" class="text-decoration-none">
+                <div class="card shadow-sm p-3 text-center">
+                    <h5>📋 Historial de Ventas</h5>
+                </div>
+            </a>
+        </div>
+
+
+
+
+
+
+
+
+</div>
+
+{% endblock %}

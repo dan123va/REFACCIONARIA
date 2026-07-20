@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Punto de Venta
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= HEADER ================= -->
+
+            <!-- Datos -->
+            <div class="col-md-4">
+
+                <table class="table table-borderless table-sm mb-0">
+
+                    <tr>
+                        <th>👤 Usuario:</th>
+                        <td>{{ session.usuario }}</td>
+                    </tr>
+
+                    <tr>
+                        <th>👥 Cliente:</th>
+                        <td>Mostrador</td>
+                    </tr>
+
+                    <tr>
+                        <th>📅 Fecha:</th>
+                        <td id="fechaActual"></td>
+                    </tr>
+
+                    <tr>
+                        <th>🕒 Hora:</th>
+                        <td id="horaActual"></td>
+                    </tr>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h2 class="mb-0">
+        🧾 Punto de Venta
+    </h2>
+
+</div>
+
+<!-- ================= MENSAJE ================= -->
+
+{% if mensaje %}
+
+<div class="alert alert-info">
+    {{ mensaje }}
+</div>
+
+{% endif %}
+
+<!-- ================= FORMULARIO ================= -->
+
+<div class="card card-optimus">
+
+    <div class="card-body">
+
+        <form method="POST">
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Producto
+                </label>
+
+                <select name="id_producto" class="form-select" required>
+
+                    {% for producto in productos %}
+
+                    <option value="{{ producto[0] }}">
+
+                        {{ producto[1] }} -
+                        {{ producto[2] }}
+                        | Precio: ${{ producto[3] }}
+                        | Stock: {{ producto[4] }}
+
+                    </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+            <div class="mb-3">
+
+                <label class="form-label">
+                    Cantidad
+                </label>
+
+                <input type="number"
+                       name="cantidad"
+                       min="1"
+                       class="form-control"
+                       required>
+
+            </div>
+
+            <button type="submit" class="btn btn-danger w-100">
+
+                🛒 Registrar Venta
+
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

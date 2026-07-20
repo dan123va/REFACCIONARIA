@@ -1,0 +1,310 @@
+/*=============================================================
+    REFACCIONARIA OPTIMUS ERP
+    Archivo : dashboard.css
+    Módulo  : Dashboards Administrador / Cajero
+=============================================================*/
+
+
+
+/* =====================================================
+   TARJETAS DE INFORMACIÓN
+===================================================== */
+
+
+.dashboard-card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:25px;
+
+    box-shadow:
+    0 5px 15px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+
+.dashboard-card:hover{
+
+    transform:translateY(-5px);
+
+}
+
+
+
+
+
+/* =====================================================
+   ICONOS DE ESTADÍSTICAS
+===================================================== */
+
+
+.dashboard-icon{
+
+    font-size:35px;
+
+}
+
+
+
+
+
+/* =====================================================
+   ACCIONES RÁPIDAS
+===================================================== */
+
+
+.dashboard-action{
+
+    padding:20px;
+
+    border-radius:15px;
+
+    text-align:center;
+
+    transition:.3s;
+
+}
+
+
+
+.dashboard-action:hover{
+
+    transform:translateY(-3px);
+
+}
+
+
+
+
+
+/* =====================================================
+   BLOQUES DE ALERTAS
+===================================================== */
+
+
+.dashboard-alert{
+
+    border-radius:15px;
+
+    padding:20px;
+
+}
+
+
+/*=============================================================
+    REFACCIONARIA OPTIMUS ERP
+    Archivo : productos.css
+    Módulo  : Productos
+    Autor   : ConstruccionDJ
+    Versión : 1.0
+=============================================================*/
+
+
+/* =====================================================
+   TARJETAS DEL MÓDULO PRODUCTOS
+===================================================== */
+
+
+.productos-cards{
+
+    margin-top:30px;
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+}
+
+
+
+
+.producto-card{
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    box-shadow:
+    0 5px 15px rgba(0,0,0,.08);
+
+    transition:.3s;
+
+}
+
+
+
+.producto-card:hover{
+
+    transform:translateY(-5px);
+
+}
+
+
+
+
+
+/* =====================================================
+   ICONOS DE PRODUCTOS
+===================================================== */
+
+
+.producto-card span{
+
+    font-size:35px;
+
+    font-weight:bold;
+
+    color:#F59E0B;
+
+}
+
+
+
+
+
+/* =====================================================
+   BOTONES DE ACCIONES
+===================================================== */
+
+
+.productos-acciones{
+
+    margin-top:30px;
+
+    display:flex;
+
+    gap:20px;
+
+    flex-wrap:wrap;
+
+}
+
+
+
+.productos-acciones a{
+
+    background:#2563EB;
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:15px 25px;
+
+    border-radius:15px;
+
+    transition:.3s;
+
+}
+
+
+
+.productos-acciones a:hover{
+
+    transform:translateY(-3px);
+
+    opacity:.9;
+
+}
+
+
+
+
+
+/* =====================================================
+   TABLA DE PRODUCTOS
+===================================================== */
+
+
+.productos-tabla{
+
+    margin-top:40px;
+
+    background:white;
+
+    padding:25px;
+
+    border-radius:20px;
+
+    box-shadow:
+    0 5px 15px rgba(0,0,0,.08);
+
+}
+
+
+
+
+.productos-tabla h2{
+
+    margin-bottom:20px;
+
+}
+
+
+
+
+
+.productos-tabla table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+
+
+
+
+.productos-tabla th{
+
+    background:#334155;
+
+    color:white;
+
+    padding:15px;
+
+}
+
+
+
+
+
+.productos-tabla td{
+
+    padding:15px;
+
+    border-bottom:
+    1px solid #e5e7eb;
+
+}
+
+
+
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+
+@media(max-width:768px){
+
+
+    .productos-acciones{
+
+        flex-direction:column;
+
+    }
+
+
+}

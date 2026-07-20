@@ -1,0 +1,264 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Panel Cajero
+{% endblock %}
+
+
+
+{% block content %}
+
+
+<div class="container-fluid">
+
+
+<!-- ENCABEZADO -->
+
+<div class="mb-4">
+
+
+<h2 class="fw-bold">
+
+<i class="bi bi-receipt-cutoff"></i>
+
+Panel de Cajero
+
+</h2>
+
+
+<p class="text-muted">
+
+Bienvenido,
+<strong>{{ session['usuario'] }}</strong>
+
+</p>
+
+
+</div>
+
+
+
+
+
+<!-- RESUMEN -->
+
+<div class="row g-4 mb-4">
+
+
+<div class="col-md-4">
+
+
+<div class="card shadow-sm border-0 p-3">
+
+
+<h6>
+Ventas del día
+</h6>
+
+
+<h2>
+0
+</h2>
+
+
+<i class="bi bi-cart-check fs-1"></i>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="col-md-4">
+
+
+<div class="card shadow-sm border-0 p-3">
+
+
+<h6>
+Productos vendidos
+</h6>
+
+
+<h2>
+0
+</h2>
+
+
+<i class="bi bi-box-seam fs-1"></i>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+<div class="col-md-4">
+
+
+<div class="card shadow-sm border-0 p-3">
+
+
+<h6>
+Estado
+</h6>
+
+
+<h2>
+Activo
+</h2>
+
+
+<i class="bi bi-person-check fs-1"></i>
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+<!-- ACCIONES -->
+
+
+<div class="card shadow-sm border-0">
+
+
+<div class="card-body">
+
+
+<h4>
+Operaciones rápidas
+</h4>
+
+
+
+<div class="row g-3 mt-3">
+
+
+
+<div class="col-md-3">
+
+
+<a href="/cajero"
+class="btn btn-primary w-100 p-3">
+
+
+<i class="bi bi-cart-plus fs-3"></i>
+
+<br>
+
+Nueva Venta
+
+
+</a>
+
+
+</div>
+
+
+
+
+
+<div class="col-md-3">
+
+
+<a href="/buscar"
+class="btn btn-outline-primary w-100 p-3">
+
+
+<i class="bi bi-search fs-3"></i>
+
+<br>
+
+Buscar Refacción
+
+
+</a>
+
+
+</div>
+
+
+
+
+
+<div class="col-md-3">
+
+
+<a href="/carrito"
+class="btn btn-outline-primary w-100 p-3">
+
+
+<i class="bi bi-cart3 fs-3"></i>
+
+<br>
+
+Carrito
+
+
+</a>
+
+
+</div>
+
+
+
+
+
+<div class="col-md-3">
+
+
+<a href="/historial_ventas"
+class="btn btn-outline-primary w-100 p-3">
+
+
+<i class="bi bi-clock-history fs-3"></i>
+
+<br>
+
+Historial
+
+
+</a>
+
+
+</div>
+
+
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+
+</div>
+
+
+{% endblock %}

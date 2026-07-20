@@ -1,0 +1,680 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Productos
+{% endblock %}
+
+{% block content %}
+
+
+
+<!-- ================= HEADER ================= -->
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+    <h2 class="mb-0">
+        📦 Productos
+    </h2>
+
+    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalProducto">
+        + Nuevo Producto
+    </button>
+
+</div>
+
+<!-- ================================================= -->
+<!-- BUSCADOR LOCAL DE PRODUCTOS -->
+<!-- Filtra la tabla sin consultar la Base de Datos -->
+<!-- ================================================= -->
+
+<div class="card card-optimus mb-3">
+
+    <div class="card-body">
+
+        <div class="input-group">
+
+            <!-- Ícono -->
+            <span class="input-group-text">
+                🔍
+            </span>
+
+            <!-- Campo de búsqueda -->
+            <input
+                type="text"
+                id="buscarProducto"
+                class="form-control"
+                placeholder="Buscar por código, OEM, nombre, marca o categoría...">
+
+            <!-- Botón limpiar -->
+            <button
+                class="btn btn-outline-secondary"
+                id="limpiarBusqueda"
+                type="button">
+
+                ✖
+
+            </button>
+
+        </div>
+
+        
+
+        <!-- Contador -->
+        <small
+            id="contadorProductos"
+            class="text-muted mt-2 d-block">
+
+            Mostrando {{ productos|length }} productos
+
+        </small>
+
+    </div>
+
+</div>
+
+<!-- ================= TABLA ================= -->
+<div class="card card-optimus">
+
+    <div class="card-body">
+
+        <div class="table-responsive">
+
+            <!-- ================================================= -->
+            <!-- MENSAJE CUANDO NO EXISTEN RESULTADOS -->
+            <!-- ================================================= -->
+
+            <div
+            id="sinResultados"
+            class="alert alert-warning mt-3"
+            style="display:none;">
+
+            No se encontraron productos.
+
+            </div>
+
+            <table class="table table-hover align-middle" id="tablaProductos">
+
+                <thead class="table-dark">
+                    
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Marca</th>
+                        <th>Categoría</th>
+                        <th>Ubicación</th>
+                        <th>Precio</th>
+                        <th>Stock</th>
+                        <th>Acciones</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for producto in productos %}
+
+                    <tr>
+
+                        <td>{{ producto[0] }}</td>
+                        <td>{{ producto[1] }}</td>
+                        <td>{{ producto[2] }}</td>
+                        <td>{{ producto[3] }}</td>
+                        <td>{{ producto[4] }}</td>
+                        <td>
+
+    <button
+        class="btn btn-info btn-sm text-white"
+        data-bs-toggle="modal"
+        data-bs-target="#modalUbicacion{{ producto[0] }}">
+
+        <i class="bi bi-geo-alt-fill"></i>
+
+        Ver ubicación
+
+    </button>
+
+</td>
+                        <td>${{ producto[6] }}</td>
+                        <td>
+
+    {% if producto[7] == 0 %}
+
+        <span class="badge bg-danger">
+            🔴 Agotado
+        </span>
+
+        <br>
+
+        <small class="text-muted">
+            {{ producto[7] }} unidades
+        </small>
+
+
+    {% elif producto[7] <= 5 %}
+
+        <span class="badge bg-warning text-dark">
+            🟡 Stock bajo
+        </span>
+
+        <br>
+
+        <small class="text-muted">
+            {{ producto[7] }} unidades
+        </small>
+
+
+    {% else %}
+
+        <span class="badge bg-success">
+            🟢 Disponible
+        </span>
+
+        <br>
+
+        <small class="text-muted">
+            {{ producto[7] }} unidades
+        </small>
+
+
+    {% endif %}
+
+</td>
+
+                        <td>
+
+                            <button
+                                class="btn btn-warning btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEditar{{ producto[0] }}">
+                                ✏
+                            </button>
+
+                            <button
+                                class="btn btn-danger btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalEliminar{{ producto[0] }}">
+                                🗑
+                            </button>
+
+
+
+
+                            <a href="/agregar_carrito/{{ producto[0] }}"
+                               class="btn btn-success btn-sm">
+                                🛒
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ========================================================= -->
+<!-- 🔥 AQUÍ EMPIEZA ZONA DE MODALES (FUTURO CRECIMIENTO ERP) -->
+<!-- Aquí después agregarás:
+     - Eliminar producto
+     - Ver detalle producto
+     - Stock bajo alertas
+     - Historial de cambios
+-->
+<!-- ========================================================= -->
+
+<!-- ================= MODALES EDITAR ================= -->
+{% for producto in productos %}
+
+<div class="modal fade" id="modalEditar{{ producto[0] }}" tabindex="-1">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-warning">
+
+                <h5 class="modal-title">
+                    Editar Producto
+                </h5>
+
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+
+            </div>
+
+            <form method="POST" action="/editar_producto/{{ producto[0] }}">
+
+                <div class="modal-body">
+
+                    <div class="row">
+
+                        <div class="col-md-4 mb-3">
+                            <label>Código</label>
+                            <input type="text" name="codigo"
+                                   value="{{ producto[1] }}"
+                                   class="form-control" required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Nombre</label>
+                            <input type="text" name="nombre"
+                                   value="{{ producto[2] }}"
+                                   class="form-control" required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Marca</label>
+                            <input type="text" name="marca_refaccion"
+                                   value="{{ producto[3] }}"
+                                   class="form-control">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Precio Venta</label>
+                            <input type="number" step="0.01"
+                                   name="precio_venta"
+                                   value="{{ producto[6] }}"
+                                   class="form-control">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Stock</label>
+                            <input type="number"
+                                   name="stock"
+                                   value="{{ producto[7] }}"
+                                   class="form-control">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn btn-warning">
+                        Actualizar
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+<!-- ================= MODAL CREAR PRODUCTO ================= -->
+<div class="modal fade" id="modalProducto" tabindex="-1">
+
+    <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-danger text-white">
+
+                <h5 class="modal-title">
+                    Registrar Producto
+                </h5>
+
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+
+            </div>
+
+            
+
+            <form method="POST">
+
+                <div class="modal-body">
+
+                    <div class="row">
+
+                        <div class="col-md-4 mb-3">
+                            <label>Código</label>
+                            <input type="text" name="codigo" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Código OEM</label>
+                            <input type="text" name="codigo_oem" class="form-control">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Nombre</label>
+                            <input type="text" name="nombre" class="form-control" required>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Marca</label>
+                            <input type="text" name="marca_refaccion" class="form-control">
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Categoría</label>
+                            <select name="id_categoria" class="form-select">
+                                {% for categoria in categorias %}
+                                    <option value="{{ categoria[0] }}">
+                                        {{ categoria[1] }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-4 mb-3">
+                            <label>Ubicación</label>
+                            <select name="id_ubicacion" class="form-select">
+                                {% for ubicacion in ubicaciones %}
+                                    <option value="{{ ubicacion[0] }}">
+                                        Pasillo {{ ubicacion[1] }} - Estante {{ ubicacion[2] }} - Nivel {{ ubicacion[3] }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label>Precio Compra</label>
+                            <input type="number" step="0.01" name="precio_compra" class="form-control">
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label>Precio Venta</label>
+                            <input type="number" step="0.01" name="precio_venta" class="form-control">
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label>Stock</label>
+                            <input type="number" name="stock" class="form-control">
+                        </div>
+
+                        <div class="col-md-3 mb-3">
+                            <label>Stock Mínimo</label>
+                            <input type="number" name="stock_minimo" class="form-control">
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn btn-danger">
+                        Guardar Producto
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+{% for producto in productos %}
+
+<div class="modal fade" id="modalEliminar{{ producto[0] }}" tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <div class="modal-header bg-danger text-white">
+
+                <h5 class="modal-title">
+                    Eliminar Producto
+                </h5>
+
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+
+            </div>
+
+            <div class="modal-body">
+
+                <p>¿Seguro que deseas eliminar este producto?</p>
+
+                <h5>
+                    {{ producto[2] }}
+                </h5>
+
+                <small class="text-muted">
+                    Código: {{ producto[1] }}
+                </small>
+
+            </div>
+
+            <div class="modal-footer">
+
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancelar
+                </button>
+
+                <a href="/eliminar_producto/{{ producto[0] }}"
+                   class="btn btn-danger">
+
+                    Sí, eliminar
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= MODAL UBICACION ================= -->
+
+<div class="modal fade" id="modalUbicacion{{ producto[0] }}" tabindex="-1">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+
+            <div class="modal-header bg-info text-white">
+
+                <h5 class="modal-title">
+
+                    <i class="bi bi-geo-alt-fill"></i>
+
+                    Ubicación de Refacción
+
+                </h5>
+
+
+                <button 
+                type="button" 
+                class="btn-close btn-close-white" 
+                data-bs-dismiss="modal">
+
+                </button>
+
+
+            </div>
+
+
+
+            <div class="modal-body">
+
+
+                <h5>
+                    {{ producto[2] }}
+                </h5>
+
+
+                <hr>
+
+
+                <p>
+
+                    <strong>Código:</strong>
+
+                    {{ producto[1] }}
+
+                </p>
+
+
+                <div class="alert alert-primary">
+
+
+                    <p class="mb-1">
+
+                        📍 <strong>Pasillo:</strong>
+
+                        {{ producto[5].split('-')[0] }}
+
+                    </p>
+
+
+                    <p class="mb-1">
+
+                        🗄️ <strong>Estante:</strong>
+
+                        {{ producto[5].split('-')[1] }}
+
+                    </p>
+
+
+                    <p class="mb-0">
+
+                        📚 <strong>Nivel:</strong>
+
+                        {{ producto[5].split('-')[2] }}
+
+                    </p>
+
+
+                </div>
+
+
+            </div>
+
+
+            <div class="modal-footer">
+
+
+                <button 
+                class="btn btn-secondary"
+                data-bs-dismiss="modal">
+
+                    Cerrar
+
+                </button>
+
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+<!-- ================================================= -->
+<!-- BUSCADOR LOCAL DE PRODUCTOS -->
+<!-- Filtra la tabla mientras el usuario escribe -->
+<!-- ================================================= -->
+
+{% block extra_js %}
+
+<script>
+
+/*=========================================
+    BUSCADOR LOCAL DE PRODUCTOS
+=========================================*/
+
+const buscador = document.getElementById("buscarProducto");
+
+const limpiar = document.getElementById("limpiarBusqueda");
+
+const filas = document.querySelectorAll("#tablaProductos tbody tr");
+
+const contador = document.getElementById("contadorProductos");
+
+const sinResultados = document.getElementById("sinResultados");
+
+
+buscador.addEventListener("keyup", filtrarProductos);
+
+
+limpiar.addEventListener("click", () => {
+
+    buscador.value = "";
+
+    filtrarProductos();
+
+});
+
+
+function filtrarProductos(){
+
+    const texto = buscador.value.toLowerCase();
+
+    let visibles = 0;
+
+    filas.forEach(fila => {
+
+        const contenido = fila.textContent.toLowerCase();
+
+        if(contenido.includes(texto)){
+
+            fila.style.display = "";
+
+            visibles++;
+
+        }else{
+
+            fila.style.display = "none";
+
+        }
+
+    });
+
+    contador.innerHTML =
+        "Mostrando " + visibles + " producto(s)";
+
+    if(visibles==0){
+
+        sinResultados.style.display="block";
+
+    }else{
+
+        sinResultados.style.display="none";
+
+    }
+
+}
+
+</script>
+
+
+{% endblock %}
+
+{% endfor %}
+
+{% endblock %}

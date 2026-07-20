@@ -1,0 +1,2004 @@
+{% extends 'base.html' %}
+
+
+{% block title %}
+Punto de Venta
+{% endblock %}
+
+
+
+
+
+{% block content %}
+
+
+
+
+
+<!-- ====================================================== -->
+<!-- ENCABEZADO DEL PUNTO DE VENTA -->
+<!-- ====================================================== -->
+
+
+<div class="card shadow-sm border-0 mb-4">
+
+
+    <div class="card-body">
+
+
+        <div class="row align-items-center">
+
+
+
+
+
+            <!-- ================= LOGO ================= -->
+
+
+            <div class="col-md-2 text-center">
+
+
+                <img 
+                    src="{{ url_for('static', filename='img/Optimus_Negro.png') }}"
+                    width="90"
+                    class="img-fluid">
+
+
+            </div>
+
+
+
+
+
+
+
+            <!-- ================= INFORMACIÓN SISTEMA ================= -->
+
+
+            <div class="col-md-6">
+
+
+                <h2 class="fw-bold text-danger mb-1">
+
+                    REFACCIONARIA OPTIMUS
+
+                </h2>
+
+
+
+                <p class="text-muted mb-2">
+
+                    Sistema Profesional de Punto de Venta
+
+                </p>
+
+
+
+                <h4 class="fw-bold">
+
+
+                    <i class="bi bi-cart3"></i>
+
+
+                    Punto de Venta
+
+
+                </h4>
+
+
+
+            </div>
+
+
+
+
+
+
+
+
+            <!-- ================= DATOS VENTA ================= -->
+
+
+            <div class="col-md-4">
+
+
+                <table class="table table-borderless table-sm mb-0">
+
+
+                    <tr>
+
+
+                        <th>
+
+                            👤 Usuario:
+
+                        </th>
+
+
+
+                        <td>
+
+                            {{ session.usuario }}
+
+                        </td>
+
+
+
+                    </tr>
+
+
+
+
+                    <tr>
+
+
+                        <th>
+
+                            👥 Cliente:
+
+                        </th>
+
+
+
+                        <td>
+
+                            Mostrador
+
+                        </td>
+
+
+
+                    </tr>
+
+
+
+
+
+                    <tr>
+
+
+                        <th>
+
+                            📅 Fecha:
+
+                        </th>
+
+
+
+                        <td id="fechaActual">
+
+
+                        </td>
+
+
+
+                    </tr>
+
+
+
+
+
+
+                    <tr>
+
+
+                        <th>
+
+                            🕒 Hora:
+
+                        </th>
+
+
+
+                        <td id="horaActual">
+
+
+                        </td>
+
+
+
+                    </tr>
+
+
+
+                </table>
+
+
+
+            </div>
+
+
+
+
+
+        </div>
+
+
+
+    </div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ====================================================== -->
+<!-- CONTENEDOR PRINCIPAL -->
+<!-- ====================================================== -->
+
+
+<div class="container-fluid">
+
+
+
+    <div class="row">
+
+
+
+
+
+
+
+        <!-- ================================================== -->
+        <!-- BUSCADOR DE PRODUCTOS -->
+        <!-- ================================================== -->
+
+
+
+
+
+<!-- CONTADOR -->
+
+
+<div 
+id="contadorProductos"
+class="text-muted mb-3">
+
+
+</div>
+
+
+
+
+
+<!-- SIN RESULTADOS -->
+
+
+<div
+id="sinResultados"
+class="alert alert-warning text-center"
+style="display:none;">
+
+
+    <i class="bi bi-search"></i>
+
+
+    No se encontraron productos
+
+
+</div>
+
+        <div class="col-lg-7">
+
+
+
+            <div class="card shadow-sm border-0">
+
+
+
+
+
+                <div class="card-header bg-primary text-white">
+
+
+
+                    <h5 class="mb-0">
+
+
+                        <i class="bi bi-search"></i>
+
+
+                        Buscar Refacción
+
+
+                    </h5>
+
+
+
+                </div>
+
+
+
+
+
+
+
+
+                <div class="card-body">
+
+                    <!-- ================= BUSCADOR ================= -->
+
+
+<div class="input-group mb-3">
+
+
+    <input
+        id="buscarProducto"
+        type="text"
+        class="form-control form-control-lg"
+        placeholder="Buscar código, nombre, marca...">
+
+
+
+    <button
+        id="limpiarBusqueda"
+        class="btn btn-outline-secondary"
+        type="button">
+
+
+        <i class="bi bi-x-circle"></i>
+
+
+    </button>
+
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    <div class="table-responsive">
+
+
+
+
+
+                        <table class="table table-hover align-middle">
+
+
+
+
+
+
+                            <thead class="table-light">
+
+
+
+                                <tr>
+
+
+                                    <th>
+
+                                        Código
+
+                                    </th>
+
+
+
+
+                                    <th>
+
+                                        Producto
+
+                                    </th>
+
+
+
+
+                                    <th>
+
+                                        Ubicación
+
+                                    </th>
+
+
+
+
+                                    <th class="text-center">
+
+                                        Stock
+
+                                    </th>
+
+
+
+
+                                    <th class="text-end">
+
+                                        Precio
+
+                                    </th>
+
+
+
+
+                                    <th class="text-center">
+
+                                        Acción
+
+                                    </th>
+
+
+
+                                </tr>
+
+
+
+                            </thead>
+
+
+
+
+
+
+
+
+                            <tbody id="tablaProductos">
+
+
+
+
+
+
+                            {% for p in productos %}
+
+
+
+
+
+
+
+                                <tr>
+
+
+
+
+
+
+
+                                    <!-- ================= CÓDIGO ================= -->
+
+
+                                    <td>
+
+
+                                        {{ p[1] }}
+
+
+                                    </td>
+
+
+
+
+
+
+
+
+                                    <!-- ================= PRODUCTO ================= -->
+
+
+                                    <td>
+
+
+
+                                        <strong>
+
+
+                                            {{ p[2] }}
+
+
+                                        </strong>
+
+
+
+                                    </td>
+
+
+
+
+
+
+
+
+
+                                    <!-- ================= UBICACIÓN ================= -->
+
+
+                                    <td class="text-center">
+
+
+
+                                        <button
+
+                                            class="btn btn-info btn-sm text-white"
+
+                                            data-bs-toggle="modal"
+
+                                            data-bs-target="#modalUbicacion{{ p[0] }}">
+
+
+
+                                            <i class="bi bi-geo-alt-fill"></i>
+
+
+
+                                            Ver
+
+
+
+                                        </button>
+
+
+
+                                    </td>
+
+
+
+
+
+
+
+
+
+                                    <!-- ================= STOCK ================= -->
+
+
+                                    <td class="text-center">
+
+
+
+
+
+                                        {% if p[3] == 0 %}
+
+
+
+
+
+                                            <span class="badge bg-danger">
+
+
+                                                🔴 Agotado
+
+
+                                            </span>
+
+
+
+
+                                            <br>
+
+
+
+                                            <small>
+
+
+                                                0 unidades
+
+
+                                            </small>
+
+
+
+
+
+
+
+                                        {% elif p[3] <= 5 %}
+
+
+
+
+
+
+
+                                            <span class="badge bg-warning text-dark">
+
+
+                                                🟡 Stock bajo
+
+
+                                            </span>
+
+
+
+
+
+                                            <br>
+
+
+
+
+
+                                            <small>
+
+
+                                                {{ p[3] }} unidades
+
+
+                                            </small>
+
+
+
+
+
+
+
+
+                                        {% else %}
+
+
+
+
+
+
+
+                                            <span class="badge bg-success">
+
+
+                                                🟢 Disponible
+
+
+                                            </span>
+
+
+
+
+
+                                            <br>
+
+
+
+
+
+                                            <small>
+
+
+                                                {{ p[3] }} unidades
+
+
+                                            </small>
+
+
+
+
+
+
+
+                                        {% endif %}
+
+
+
+
+
+                                    </td>
+
+                                                                        <!-- ================= PRECIO ================= -->
+
+
+                                    <td class="text-end">
+
+
+                                        <strong>
+
+
+                                            ${{ "%.2f"|format(p[4]) }}
+
+
+                                        </strong>
+
+
+
+                                    </td>
+
+
+
+
+
+
+
+
+
+                                    <!-- ================= ACCIÓN ================= -->
+
+
+                                    <!-- ================= ACCIÓN ================= -->
+
+
+<td class="text-center">
+
+
+    {% if p[3] > 0 %}
+
+
+        <!--
+        ==================================================
+        BOTÓN AGREGAR AL CARRITO
+        ==================================================
+
+        Este botón utiliza AJAX.
+        No recarga la página.
+        Permite seguir buscando refacciones.
+
+        ==================================================
+        -->
+
+
+        <button
+
+            class="btn btn-success btn-sm agregar-carrito"
+
+            data-id="{{ p[0] }}">
+
+
+
+            <i class="bi bi-cart-plus"></i>
+
+
+
+        </button>
+
+
+
+    {% else %}
+
+
+
+        <!-- PRODUCTO SIN STOCK -->
+
+
+        <button
+
+            class="btn btn-secondary btn-sm"
+
+            disabled>
+
+
+
+            <i class="bi bi-x-circle"></i>
+
+
+
+        </button>
+
+
+
+    {% endif %}
+
+
+
+</td>
+
+
+
+
+
+
+
+                                </tr>
+
+
+
+
+
+
+                            {% endfor %}
+
+
+
+
+
+
+
+                            </tbody>
+
+
+
+
+
+
+                        </table>
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+        <!-- ================================================== -->
+        <!-- CARRITO DE COMPRA -->
+        <!-- ================================================== -->
+
+
+
+
+
+        <div class="col-lg-5">
+
+
+
+
+
+            <div class="card shadow-sm border-0">
+
+
+
+
+
+                <div class="card-header bg-success text-white">
+
+
+
+
+
+                    <h5 class="mb-0">
+
+
+                        <i class="bi bi-cart3"></i>
+
+
+                        Carrito de Compra
+
+
+
+                    </h5>
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+                <div class="card-body">
+
+
+
+
+
+
+
+                    <div class="table-responsive">
+
+
+
+
+
+
+                        <table class="table table-sm align-middle">
+
+
+
+
+
+
+                            <thead>
+
+
+
+                                <tr>
+
+
+
+                                    <th>
+
+                                        Producto
+
+                                    </th>
+
+
+
+                                    <th class="text-center">
+
+                                        Cant.
+
+                                    </th>
+
+
+
+                                    <th class="text-end">
+
+                                        Subtotal
+
+                                    </th>
+
+
+
+                                </tr>
+
+
+
+
+                            </thead>
+
+
+
+
+
+
+
+
+                            <tbody>
+
+
+
+
+
+
+
+                            {% if carrito %}
+
+
+
+
+
+
+
+                                {% for item in carrito %}
+
+
+
+
+
+
+
+                                <tr>
+
+
+
+
+
+
+                                    <td>
+
+
+                                        {{ item.nombre }}
+
+
+
+                                    </td>
+
+
+
+
+
+
+                                    <td class="text-center">
+
+
+                                        {{ item.cantidad }}
+
+
+
+                                    </td>
+
+
+
+
+
+
+
+                                    <td class="text-end">
+
+
+
+                                        ${{ "%.2f"|format(item.subtotal) }}
+
+
+
+                                    </td>
+
+
+
+
+
+
+                                </tr>
+
+
+
+
+
+
+
+                                {% endfor %}
+
+
+
+
+
+
+
+                            {% else %}
+
+
+
+
+
+
+
+                                <tr>
+
+
+
+
+                                    <td colspan="3"
+
+                                        class="text-center text-muted py-4">
+
+
+
+
+
+                                        <i class="bi bi-cart-x fs-1"></i>
+
+
+
+
+
+                                        <br>
+
+
+
+
+
+                                        Carrito vacío
+
+
+
+
+
+                                    </td>
+
+
+
+
+
+                                </tr>
+
+
+
+
+
+
+
+                            {% endif %}
+
+
+
+
+
+
+
+                            </tbody>
+
+
+
+
+
+
+
+                        </table>
+
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+
+
+
+                    <hr>
+
+
+
+
+
+
+
+
+
+                    <!-- ================= TOTAL ================= -->
+
+
+
+                    <div class="d-flex justify-content-between align-items-center">
+
+
+
+
+
+                        <h4>
+
+
+                            TOTAL
+
+
+                        </h4>
+
+
+
+
+
+
+
+                        <h2 class="text-success">
+
+
+
+                            ${{ "%.2f"|format(total) }}
+
+
+
+                        </h2>
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+
+
+                    <!-- ================= BOTÓN CARRITO ================= -->
+
+
+
+                    <div class="d-grid mt-3">
+
+
+
+
+
+
+                        <a href="/carrito"
+
+                           class="btn btn-success btn-lg">
+
+
+
+
+
+                            <i class="bi bi-cart-check-fill"></i>
+
+
+
+
+
+                            Ver Carrito
+
+
+
+
+
+                        </a>
+
+
+
+
+
+
+                    </div>
+
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+
+
+<!-- ====================================================== -->
+<!-- MODALES UBICACIÓN -->
+<!-- ====================================================== -->
+
+
+
+{% for p in productos %}
+
+
+
+
+
+<div class="modal fade"
+
+     id="modalUbicacion{{ p[0] }}"
+
+     tabindex="-1">
+
+
+
+
+
+    <div class="modal-dialog">
+
+
+
+
+
+        <div class="modal-content">
+
+
+
+
+
+            <div class="modal-header bg-info text-white">
+
+
+
+
+
+                <h5 class="modal-title">
+
+
+
+                    <i class="bi bi-geo-alt-fill"></i>
+
+
+
+                    Ubicación de Refacción
+
+
+
+                </h5>
+
+
+
+
+
+
+                <button type="button"
+
+                        class="btn-close btn-close-white"
+
+                        data-bs-dismiss="modal">
+
+
+
+                </button>
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+
+            <div class="modal-body">
+
+
+
+
+
+
+                <h5>
+
+
+                    {{ p[2] }}
+
+
+
+                </h5>
+
+
+
+
+
+
+                <hr>
+
+
+
+
+
+
+
+                <p>
+
+
+                    <strong>
+
+                        Código:
+
+                    </strong>
+
+
+                    {{ p[1] }}
+
+
+
+
+                </p>
+
+
+
+
+
+
+
+
+
+                <div class="alert alert-primary">
+
+
+
+
+
+                    <p>
+
+
+                        📍 <strong>Pasillo:</strong>
+
+
+                        {{ p[5] }}
+
+
+
+                    </p>
+
+
+
+
+
+
+                    <p>
+
+
+                        🗄 <strong>Estante:</strong>
+
+
+                        {{ p[6] }}
+
+
+
+                    </p>
+
+
+
+
+
+
+                    <p class="mb-0">
+
+
+                        📚 <strong>Nivel:</strong>
+
+
+                        {{ p[7] }}
+
+
+
+                    </p>
+
+
+
+
+
+
+                </div>
+
+
+
+
+
+
+
+            </div>
+
+
+
+
+
+
+        </div>
+
+
+
+
+
+
+    </div>
+
+
+
+
+
+
+</div>
+
+
+
+
+
+
+
+{% endfor %}
+
+
+
+
+<!-- ================= ALERTA CARRITO ================= -->
+
+
+<div class="position-fixed top-0 end-0 p-3"
+style="z-index:9999">
+
+
+<div id="toastCarrito"
+class="toast align-items-center text-bg-success border-0">
+
+
+<div class="d-flex">
+
+
+<div class="toast-body">
+
+
+<i class="bi bi-check-circle-fill"></i>
+
+Producto agregado al carrito
+
+
+</div>
+
+
+
+<button
+
+type="button"
+
+class="btn-close btn-close-white me-2 m-auto"
+
+data-bs-dismiss="toast">
+
+</button>
+
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+{% block extra_js %}
+
+
+<script>
+
+
+// ======================================================
+// FECHA Y HORA ACTUAL
+// ======================================================
+
+
+function actualizarFecha(){
+
+
+    let ahora = new Date();
+
+
+
+    document.getElementById("fechaActual").innerHTML =
+
+        ahora.toLocaleDateString();
+
+
+
+
+    document.getElementById("horaActual").innerHTML =
+
+        ahora.toLocaleTimeString();
+
+
+
+}
+
+
+
+setInterval(actualizarFecha,1000);
+
+
+actualizarFecha();
+
+
+
+
+
+// ======================================================
+// BUSCADOR LOCAL DE PRODUCTOS
+// ======================================================
+
+
+const buscador = document.getElementById("buscarProducto");
+
+
+const limpiar = document.getElementById("limpiarBusqueda");
+
+
+const filas = document.querySelectorAll("#tablaProductos tr");
+
+
+const contador = document.getElementById("contadorProductos");
+
+
+const sinResultados = document.getElementById("sinResultados");
+
+
+
+
+
+// VALIDACIÓN DEL BUSCADOR
+
+
+if(buscador){
+
+
+    buscador.addEventListener(
+        "keyup",
+        filtrarProductos
+    );
+
+
+}
+
+
+
+
+// BOTÓN LIMPIAR
+
+
+if(limpiar){
+
+
+    limpiar.addEventListener("click", () => {
+
+
+        buscador.value = "";
+
+
+        filtrarProductos();
+
+
+
+    });
+
+
+}
+
+
+
+
+
+function filtrarProductos(){
+
+
+
+    const texto = buscador.value.toLowerCase();
+
+
+
+    let visibles = 0;
+
+
+
+
+
+    filas.forEach(fila => {
+
+
+
+        const contenido = fila.textContent.toLowerCase();
+
+
+
+
+
+        if(contenido.includes(texto)){
+
+
+
+            fila.style.display = "";
+
+
+            visibles++;
+
+
+
+        }else{
+
+
+
+            fila.style.display = "none";
+
+
+
+        }
+
+
+
+    });
+
+
+
+
+
+
+
+    if(contador){
+
+
+        contador.innerHTML =
+
+        "Mostrando " + visibles + " producto(s)";
+
+
+
+    }
+
+
+
+
+
+    if(sinResultados){
+
+
+
+        if(visibles == 0){
+
+
+
+            sinResultados.style.display="block";
+
+
+
+        }else{
+
+
+
+            sinResultados.style.display="none";
+
+
+
+        }
+
+
+    }
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================================================
+// AGREGAR PRODUCTOS AL CARRITO SIN RECARGAR
+// ======================================================
+
+
+
+document
+.querySelectorAll(".agregar-carrito")
+.forEach(btn => {
+
+
+
+    btn.addEventListener("click", function(){
+
+
+
+        let idProducto = this.dataset.id;
+
+
+
+
+
+
+        fetch("/agregar_carrito/" + idProducto)
+
+
+
+        .then(response => {
+
+
+
+            if(response.ok){
+
+
+
+                mostrarToast();
+
+
+
+            }
+
+
+
+        })
+
+
+
+        .catch(error => {
+
+
+            console.error(
+                "Error agregando producto:",
+                error
+            );
+
+
+        });
+
+
+
+
+
+
+    });
+
+
+
+});
+
+
+
+
+
+
+
+
+
+// ======================================================
+// MOSTRAR ALERTA TOAST
+// ======================================================
+
+
+
+function mostrarToast(){
+
+
+
+    let elementoToast =
+
+    document.getElementById(
+        "toastCarrito"
+    );
+
+
+
+
+
+    if(elementoToast){
+
+
+
+        let toast =
+
+        new bootstrap.Toast(
+            elementoToast
+        );
+
+
+
+        toast.show();
+
+
+
+    }
+
+
+
+}
+
+
+
+
+
+
+
+
+
+// ======================================================
+// AGREGAR PRODUCTOS AL CARRITO SIN RECARGAR
+// ======================================================
+
+
+document.querySelectorAll(".agregar-carrito")
+.forEach(btn => {
+
+
+    btn.addEventListener("click", function(){
+
+
+        let idProducto = this.dataset.id;
+
+
+
+        fetch("/agregar_carrito/" + idProducto)
+
+        .then(response => {
+
+
+            if(response.ok){
+
+
+                mostrarToast();
+
+
+            }
+
+
+        });
+
+
+
+    });
+
+
+});
+
+
+
+
+
+
+function mostrarToast(){
+
+
+    let toast =
+    new bootstrap.Toast(
+        document.getElementById("toastCarrito")
+    );
+
+
+    toast.show();
+
+
+}
+
+</script>
+
+
+
+
+
+
+{% endblock %}

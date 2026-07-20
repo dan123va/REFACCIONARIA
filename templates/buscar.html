@@ -1,0 +1,791 @@
+```html
+{% extends 'base.html' %}
+
+
+{% block title %}
+Buscador de Compatibilidades
+{% endblock %}
+
+
+
+{% block content %}
+
+
+
+<!-- ================= HEADER ================= -->
+
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+
+
+    <h2 class="mb-0">
+
+        <i class="bi bi-search"></i>
+
+        Buscador de Compatibilidades
+
+    </h2>
+
+
+</div>
+
+
+
+
+
+<!-- ================= FILTROS ================= -->
+
+
+<div class="card card-optimus mb-3">
+
+
+<div class="card-body">
+
+
+
+<div class="row g-3">
+
+
+
+<!-- MODELO -->
+
+
+<div class="col-md-6">
+
+
+<label class="form-label">
+
+Modelo
+
+</label>
+
+
+
+<select
+id="id_modelo"
+name="id_modelo"
+class="form-select">
+
+
+<option value="">
+
+Selecciona un modelo
+
+</option>
+
+
+
+{% for modelo in modelos %}
+
+
+<option value="{{ modelo[0] }}">
+
+{{ modelo[2] }}
+
+</option>
+
+
+{% endfor %}
+
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+<!-- AÑO -->
+
+
+<div class="col-md-3">
+
+
+<label class="form-label">
+
+Año del vehículo
+
+</label>
+
+
+
+<select
+id="anio"
+name="anio"
+class="form-select">
+
+
+
+<option value="">
+
+Todos los años
+
+</option>
+
+
+
+{% for anio in range(2000,2036) %}
+
+
+<option value="{{ anio }}">
+
+{{ anio }}
+
+</option>
+
+
+{% endfor %}
+
+
+
+</select>
+
+
+
+</div>
+
+
+
+
+<div class="col-md-3 d-flex align-items-end">
+
+
+<div class="alert alert-info w-100 mb-0">
+
+
+<i class="bi bi-info-circle"></i>
+
+Selecciona modelo para buscar
+
+
+</div>
+
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<!-- ================= BUSCADOR INTERNO ================= -->
+
+
+
+<div class="card card-optimus mb-3">
+
+
+<div class="card-body">
+
+
+
+<div class="input-group">
+
+
+
+<span class="input-group-text">
+
+<i class="bi bi-search"></i>
+
+</span>
+
+
+
+
+<input
+id="buscarResultado"
+class="form-control"
+placeholder="Buscar producto, código o marca...">
+
+
+
+
+
+<button
+id="limpiarBusqueda"
+class="btn btn-outline-secondary"
+type="button">
+
+
+<i class="bi bi-x-lg"></i>
+
+
+</button>
+
+
+
+</div>
+
+
+
+
+
+<small
+id="contadorResultados"
+class="text-muted mt-2 d-block">
+
+
+Mostrando 0 resultado(s)
+
+
+</small>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+<!-- ================= TABLA ================= -->
+
+
+
+<div class="card card-optimus">
+
+
+<div class="card-body">
+
+
+
+<div class="table-responsive">
+
+
+
+
+
+<div
+id="sinResultados"
+class="alert alert-warning"
+style="display:none;">
+
+
+No se encontraron refacciones compatibles.
+
+
+</div>
+
+
+
+
+
+
+<table
+class="table table-hover align-middle"
+id="tablaResultados">
+
+
+
+<thead class="table-dark">
+
+
+
+<tr>
+
+
+<th>
+
+Código
+
+</th>
+
+
+<th>
+
+Producto
+
+</th>
+
+
+<th>
+
+Marca
+
+</th>
+
+
+<th class="text-center">
+
+Compatibilidad
+
+</th>
+
+
+<th class="text-center">
+
+Stock
+
+</th>
+
+
+<th class="text-end">
+
+Precio
+
+</th>
+
+
+<th class="text-center">
+
+Acciones
+
+</th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+
+<tbody>
+
+
+</tbody>
+
+
+
+</table>
+
+
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+{% block extra_js %}
+
+
+
+<script>
+
+
+
+const modelo =
+document.getElementById("id_modelo");
+
+
+
+const anio =
+document.getElementById("anio");
+
+
+
+const tabla =
+document.querySelector("#tablaResultados tbody");
+
+
+
+const contador =
+document.getElementById("contadorResultados");
+
+
+
+const sinResultados =
+document.getElementById("sinResultados");
+
+
+
+const buscador =
+document.getElementById("buscarResultado");
+
+
+
+const limpiar =
+document.getElementById("limpiarBusqueda");
+
+
+
+
+
+
+
+// ===============================
+// CAMBIO DE MODELO
+// ===============================
+
+
+
+modelo.addEventListener(
+"change",
+cargarResultados
+);
+
+
+
+
+
+// ===============================
+// CAMBIO DE AÑO
+// ===============================
+
+
+
+anio.addEventListener(
+"change",
+cargarResultados
+);
+
+
+
+
+
+
+
+
+function cargarResultados(){
+
+
+
+if(!modelo.value){
+
+
+tabla.innerHTML="";
+
+contador.textContent =
+"Mostrando 0 resultado(s)";
+
+
+return;
+
+
+}
+
+
+
+let url =
+"/api/compatibilidad?id_modelo="
++ modelo.value;
+
+
+
+
+if(anio.value){
+
+
+url += "&anio=" + anio.value;
+
+
+}
+
+
+
+
+
+fetch(url)
+
+
+.then(response => response.json())
+
+
+.then(data => {
+
+
+
+tabla.innerHTML="";
+
+
+
+
+
+data.forEach(producto => {
+
+
+
+tabla.innerHTML += `
+
+
+<tr>
+
+
+<td>
+
+${producto.codigo}
+
+</td>
+
+
+
+<td>
+
+${producto.nombre}
+
+</td>
+
+
+
+<td>
+
+${producto.marca}
+
+</td>
+
+
+
+<td class="text-center">
+
+${producto.anio_inicio}
+
+-
+
+${producto.anio_fin}
+
+</td>
+
+
+
+<td class="text-center">
+
+${producto.stock}
+
+</td>
+
+
+
+<td class="text-end">
+
+$${producto.precio}
+
+</td>
+
+
+
+
+<td class="text-center">
+
+
+<a
+
+href="/agregar_carrito/${producto.id_producto}"
+
+class="btn btn-success btn-sm">
+
+
+<i class="bi bi-cart-plus"></i>
+
+
+</a>
+
+
+
+<button
+
+class="btn btn-primary btn-sm"
+
+disabled>
+
+
+<i class="bi bi-geo-alt"></i>
+
+
+</button>
+
+
+
+</td>
+
+
+
+</tr>
+
+
+
+`;
+
+
+
+});
+
+
+
+
+
+
+contador.textContent =
+
+`Mostrando ${data.length} resultado(s)`;
+
+
+
+
+
+sinResultados.style.display =
+
+data.length === 0
+
+?
+
+"block"
+
+:
+
+"none";
+
+
+
+
+
+});
+
+
+}
+
+
+
+
+
+
+
+
+// ===============================
+// FILTRO INTERNO
+// ===============================
+
+
+
+buscador.addEventListener(
+
+"keyup",
+
+()=>{
+
+
+let texto =
+buscador.value.toLowerCase();
+
+
+
+let visibles=0;
+
+
+
+document
+
+.querySelectorAll("#tablaResultados tbody tr")
+
+.forEach(fila=>{
+
+
+
+let coincide =
+
+fila.textContent
+
+.toLowerCase()
+
+.includes(texto);
+
+
+
+fila.style.display =
+
+coincide ? "" : "none";
+
+
+
+if(coincide)
+
+visibles++;
+
+
+
+});
+
+
+
+
+
+contador.textContent =
+
+`Mostrando ${visibles} resultado(s)`;
+
+
+
+
+
+});
+
+
+
+
+
+
+
+
+// ===============================
+// LIMPIAR BUSQUEDA
+// ===============================
+
+
+
+limpiar.addEventListener(
+
+"click",
+
+()=>{
+
+
+buscador.value="";
+
+
+buscador.dispatchEvent(
+new Event("keyup")
+);
+
+
+
+});
+
+
+</script>
+
+
+
+{% endblock %}
+```
